@@ -20,18 +20,18 @@ describe Airport do
 
 
   context 'taking off and landing' do
-   
+
+    it 'a plane can land in the airport' do
+      plane = double :plane, landed!: nil
+      airport.gives_landing_permission_to(plane)
+      expect(airport.planes_count).to eq 1
+    end
+
     it 'a plane receives landing status when it lands in the airport' do
       plane = double :plane
       expect(plane).to receive(:landed!)
       airport.gives_landing_permission_to(plane)
     end
-
-    # it 'a plane can land in the airport' do
-    #   plane = double :plane, landed!:
-    #   airport.gives_landing_permission_to(plane)
-    #   expect(airport.plane_count).to eq 1
-    # end
     
     it 'a plane can take off' do
       plane = double :plane
@@ -51,11 +51,11 @@ describe Airport do
       expect(airport).to be_full
     end
 
-    xit 'a plane cannot land if the airport is full' do
+    it 'a plane cannot land if the airport is full' do
       # plane = double :plane, landed!:
       plane = double(:plane, {:landed! => nil})
       10.times {airport.gives_landing_permission_to(plane)}
-      expect(airport.gives_landing_permission_to(plane)).to raise(RuntimeError)
+      expect{airport.gives_landing_permission_to(plane)}.to raise_error(RuntimeError)
     end
 
   end
