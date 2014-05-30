@@ -1,4 +1,5 @@
 require 'airport'
+require 'weather'
 
 # A plane currently in the airport can be requested to take off.
 #
@@ -18,7 +19,6 @@ describe Airport do
 
   end
 
-
   context 'taking off and landing' do
 
     it 'a plane can land in the airport' do
@@ -35,6 +35,7 @@ describe Airport do
     
     it 'a plane can take off' do
       plane = double :plane
+      airport.stub!(:stormy?).and_return false
       expect(plane).to receive(:take_off!)
 
       airport.gives_take_off_permission_to(plane)
@@ -69,9 +70,12 @@ describe Airport do
   # If the airport has a weather condition of stormy,
   # the plane can not land, and must not be in the airport
   context 'weather conditions' do
-    
-    xit 'a plane cannot take off when there is a storm brewing' do
-    
+
+    it 'a plane cannot take off when there is a storm brewing' do
+      plane = double :plane, take_off!: nil
+      allow(airport).to receive(:stormy?) { true }
+      # alternative: airport.stub!(:stormy?).and_return true
+      expect{airport.gives_take_off_permission_to(plane)}.to raise_error(RuntimeError)
     end
     
     xit 'a plane cannot land in the middle of a storm' do

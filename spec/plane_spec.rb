@@ -22,14 +22,9 @@ describe Plane do
   	expect(plane.landed!).not_to be_flying
   end
 
-  xit 'has a flying status when in the air' do
+  # xit 'has a flying status when in the air' do
+  # end
   
-  end
-  
-  xit 'can take off' do
-
-  end
-  
-  
-
+  # xit 'can take off' do
+  # end
 end

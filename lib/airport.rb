@@ -1,6 +1,10 @@
+require_relative 'weather'
+
 class Airport
 
 	DEFAULT_CAPACITY = 6
+
+	include Weather
 
 	def initialize(options = {})
 		self.capacity = options.fetch(:capacity, capacity)
@@ -34,6 +38,7 @@ class Airport
 	end
 
 	def gives_take_off_permission_to(plane)
+		raise "Stormy conditions, you can't take off!" if stormy? 
 		plane.take_off!
 	end
 
