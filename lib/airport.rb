@@ -32,6 +32,7 @@ class Airport
 	end
 
 	def gives_landing_permission_to(plane)
+		raise "Stormy conditions, you are not allowed to land!" if stormy?
 		raise "Airport is full, no entry" if full?
 		planes << plane
 		plane.landed!

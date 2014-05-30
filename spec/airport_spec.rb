@@ -23,19 +23,22 @@ describe Airport do
 
     it 'a plane can land in the airport' do
       plane = double :plane, landed!: nil
+      allow(airport).to receive(:stormy?) { false }
       airport.gives_landing_permission_to(plane)
       expect(airport.planes_count).to eq 1
     end
 
     it 'a plane receives landing status when it lands in the airport' do
       plane = double :plane
+      allow(airport).to receive(:stormy?) { false }
       expect(plane).to receive(:landed!)
       airport.gives_landing_permission_to(plane)
     end
     
     it 'a plane can take off' do
       plane = double :plane
-      airport.stub!(:stormy?).and_return false
+      allow(airport).to receive(:stormy?) { false }
+      # airport.stub!(:stormy?).and_return false
       expect(plane).to receive(:take_off!)
 
       airport.gives_take_off_permission_to(plane)
@@ -47,6 +50,7 @@ describe Airport do
     it 'airport knows when it is full' do
       plane = double :plane, landed!: nil
       # plane = double(:plane, {:landed! => nil}) - same thing as above
+      allow(airport).to receive(:stormy?) { false }
       expect(airport).not_to be_full
       10.times {airport.gives_landing_permission_to(plane)}
       expect(airport).to be_full
@@ -55,6 +59,7 @@ describe Airport do
     it 'a plane cannot land if the airport is full' do
       # plane = double :plane, landed!:
       plane = double(:plane, {:landed! => nil})
+      allow(airport).to receive(:stormy?) { false }
       10.times {airport.gives_landing_permission_to(plane)}
       expect{airport.gives_landing_permission_to(plane)}.to raise_error(RuntimeError)
     end
@@ -78,9 +83,22 @@ describe Airport do
       expect{airport.gives_take_off_permission_to(plane)}.to raise_error(RuntimeError)
     end
     
-    xit 'a plane cannot land in the middle of a storm' do
-    
+    it 'a plane cannot land in the middle of a storm' do
+      plane = double :plane, take_off!: nil
+      allow(airport).to receive(:stormy?) { true }
+      expect{airport.gives_landing_permission_to(plane)}.to raise_error(RuntimeError)
     end
   end
 
+end
+
+# grand final
+# Given 6 planes, each plane must land. When the airport is full, every plane must take off again.
+# Be careful of the weather, it could be stormy!
+# Check when all the planes have landed that they have the right status "landed"
+# Once all the planes are in the air again, check that they have the status of flying!
+describe "The grand finale (last spec)" do
+  it 'all planes can land and all planes can take off' do
+    
+  end
 end
