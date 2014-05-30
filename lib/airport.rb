@@ -19,8 +19,8 @@ class Airport
 		@capacity = value
 	end
 
-	def planes
-		@planes ||= []
+	def hangar
+		@hangar ||= []
 	end
 
 	def full?
@@ -28,13 +28,13 @@ class Airport
 	end
 
 	def planes_count
-		planes.count
+		hangar.count
 	end
 
 	def gives_landing_permission_to(plane)
 		raise "Stormy conditions, you are not allowed to land!" if stormy?
 		raise "Airport is full, no entry" if full?
-		planes << plane
+		hangar << plane
 		plane.landed!
 	end
 
