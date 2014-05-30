@@ -15,7 +15,20 @@ class Airport
 		@capacity = value
 	end
 
+	def planes
+		@planes ||= []
+	end
+
+	def full?
+		planes_count == capacity
+	end
+
+	def planes_count
+		planes.count
+	end
+
 	def gives_landing_permission_to(plane)
+		planes << plane
 		plane.landed!
 	end
 

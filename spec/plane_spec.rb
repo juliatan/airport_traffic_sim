@@ -18,7 +18,7 @@ describe Plane do
   	expect(plane.take_off!).to be_flying
   end
 
-  it 'changes it status to landed after landing' do
+  it 'changes its status to landed after landing' do
   	expect(plane.landed!).not_to be_flying
   end
 
