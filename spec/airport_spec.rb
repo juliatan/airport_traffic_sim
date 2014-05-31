@@ -13,7 +13,7 @@ describe Airport do
   
   context '- setting capacity -' do
 
-    it 'should allow setting capacity on initializing' do
+    it 'should allow setting of maximum capacity on initializing' do
       expect(airport.capacity).to eq 10 
     end
 
@@ -36,8 +36,9 @@ describe Airport do
     end
 
     it 'a plane that is given take off permission actually takes off' do
-      plane = double :plane, take_off!: nil
+      plane = double :plane, landed!: nil, take_off!: nil
       allow(airport).to receive(:stormy?) { false }
+      airport.gives_landing_permission_to(plane)
       airport.gives_take_off_permission_to(plane)
       expect(airport.hangar).not_to include plane
     end
@@ -73,7 +74,6 @@ describe Airport do
 
   end
 
-    
   # Include a weather condition using a module.
   # The weather must be random and only have two states "sunny" or "stormy".
   # Try and take off a plane, but if the weather is stormy, the plane can not take off and must remain in the airport.
@@ -100,6 +100,7 @@ describe Airport do
       allow(airport).to receive(:stormy?) { true }
       expect{airport.gives_landing_permission_to(plane)}.to raise_error(RuntimeError)
     end
+
   end
 
 end
@@ -111,28 +112,31 @@ end
 # Once all the planes are in the air again, check that they have the status of flying!
 describe "The grand finale" do
   
-  let(:airport) { Airport.new(capacity: 10) }
+  let(:airport) { Airport.new(capacity: 6) }
+  let(:plane) { Plane.new}
 
-  it '- all planes land eventually' do
-    plane1 = double :plane1, landed!: nil
-    plane2 = double :plane2, landed!: nil
-    plane3 = double :plane3, landed!: nil
-    plane4 = double :plane4, landed!: nil
-    plane5 = double :plane5, landed!: nil
-    plane6 = double :plane6, landed!: nil
-    planes_queue = [plane1, plane2, plane3, plane4, plane5, plane6]
-    planes_queue.map do |plane|
+  it 'all planes can land and take off eventually' do
+    plane_queue = Plane.new, Plane.new, Plane.new, Plane.new, Plane.new, Plane.new
+    plane_queue.each do |plane|
+      expect(plane.flying?).to be_true
+      
       begin
         airport.gives_landing_permission_to(plane)
       rescue RuntimeError
         "Weather is too stormy; plane tries again later"
         redo
       end
+      expect(plane.flying?).not_to be_true
+
+      begin
+        airport.gives_take_off_permission_to(plane)
+      rescue RuntimeError
+        "Weather is too stormy; plane tries again later"
+        redo
+      end
+      expect(plane.flying?).to be_true
     end
-    expect(airport.hangar).to eq planes_queue
+    expect(airport.hangar).to be_empty
   end
 
-  xit 'all planes take off eventually' do
-
-  end
 end

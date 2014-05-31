@@ -40,6 +40,7 @@ class Airport
 
 	def gives_take_off_permission_to(plane)
 		raise "Stormy conditions, you can't take off!" if stormy? 
+		hangar.delete(plane)
 		plane.take_off!
 	end
 
