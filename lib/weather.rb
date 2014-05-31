@@ -1,7 +1,7 @@
 module Weather
 
 	def stormy?
-		[false, false, false, false].sample
+		[false, false, false, true].sample
 	end
 
 end

@@ -32,14 +32,14 @@ class Airport
 	end
 
 	def gives_landing_permission_to(plane)
-		raise "Stormy conditions, you are not allowed to land!" if stormy?
-		raise "Airport is full, no entry" if full?
+		raise StormyWeatherError.new if stormy?
+		raise FullAirportError.new if full?
 		hangar << plane
 		plane.landed!
 	end
 
 	def gives_take_off_permission_to(plane)
-		raise "Stormy conditions, you can't take off!" if stormy? 
+		raise StormyWeatherError.new if stormy? 
 		hangar.delete(plane)
 		plane.take_off!
 	end

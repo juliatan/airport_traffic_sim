@@ -1,5 +1,6 @@
 require 'airport'
 require 'weather'
+require 'errors'
 
 # A plane currently in the airport can be requested to take off.
 #
@@ -53,7 +54,7 @@ describe Airport do
 
   end
   
-  context 'traffic control -' do
+  context '- traffic control -' do
     
     it 'airport knows when it is full' do
       plane = double :plane, landed!: nil
@@ -69,7 +70,7 @@ describe Airport do
       plane = double(:plane, {:landed! => nil})
       allow(airport).to receive(:stormy?) { false }
       10.times {airport.gives_landing_permission_to(plane)}
-      expect{airport.gives_landing_permission_to(plane)}.to raise_error(RuntimeError)
+      expect{airport.gives_landing_permission_to(plane)}.to raise_error(FullAirportError)
     end
 
   end
@@ -81,9 +82,9 @@ describe Airport do
   # This will require stubbing to stop the random return of the weather.
   # If the airport has a weather condition of stormy,
   # the plane can not land, and must not be in the airport
-  context 'weather conditions' do
+  context '- weather conditions' do
 
-    it 'knows when the weather is stormy' do
+    it 'airport knows when the weather is stormy' do
       allow(airport).to receive(:stormy?) { true }
       expect(airport.stormy?).to be_true
     end
@@ -92,13 +93,13 @@ describe Airport do
       plane = double :plane, take_off!: nil
       allow(airport).to receive(:stormy?) { true }
       # alternative: airport.stub!(:stormy?).and_return true
-      expect{airport.gives_take_off_permission_to(plane)}.to raise_error(RuntimeError)
+      expect{airport.gives_take_off_permission_to(plane)}.to raise_error(StormyWeatherError)
     end
     
     it 'a plane cannot land in the middle of a storm' do
       plane = double :plane, take_off!: nil
       allow(airport).to receive(:stormy?) { true }
-      expect{airport.gives_landing_permission_to(plane)}.to raise_error(RuntimeError)
+      expect{airport.gives_landing_permission_to(plane)}.to raise_error(StormyWeatherError)
     end
 
   end
@@ -115,14 +116,17 @@ describe "The grand finale" do
   let(:airport) { Airport.new(capacity: 6) }
   let(:plane) { Plane.new}
 
-  it 'all planes can land and take off eventually' do
-    plane_queue = Plane.new, Plane.new, Plane.new, Plane.new, Plane.new, Plane.new
+  it 'all planes can land and take off (eventually, when the storm passes)' do
+    plane_queue = [Plane.new, Plane.new, Plane.new, Plane.new, Plane.new, Plane.new]
+
     plane_queue.each do |plane|
-      expect(plane.flying?).to be_true
-      
+      expect(plane).to be_flying
+    end
+
+    plane_queue.each do |plane|
       begin
         airport.gives_landing_permission_to(plane)
-      rescue RuntimeError
+      rescue StormyWeatherError
         "Weather is too stormy; plane tries again later"
         redo
       end
@@ -130,7 +134,7 @@ describe "The grand finale" do
 
       begin
         airport.gives_take_off_permission_to(plane)
-      rescue RuntimeError
+      rescue StormyWeatherError
         "Weather is too stormy; plane tries again later"
         redo
       end
