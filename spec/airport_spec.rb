@@ -1,5 +1,4 @@
 require 'airport'
-require 'weather'
 require 'errors'
 
 # A plane currently in the airport can be requested to take off.
@@ -26,7 +25,7 @@ describe Airport do
     end
 
     it 'a plane that is given landing permission actually lands' do
-      plane = double :plane, landed!: nil
+      plane = double :plane, landed!: self
       airport.gives_landing_permission_to(plane)
       expect(airport.hangar).to include plane
     end
@@ -38,7 +37,7 @@ describe Airport do
     end
 
     it 'a plane that is given take off permission actually takes off' do
-      plane = double :plane, landed!: nil, take_off!: nil
+      plane = double :plane, landed!: self, take_off!: self
       airport.gives_landing_permission_to(plane)
       airport.gives_take_off_permission_to(plane)
       expect(airport.hangar).not_to include plane
@@ -60,7 +59,7 @@ describe Airport do
     end
 
     it 'airport knows when it is full' do
-      plane = double :plane, landed!: nil
+      plane = double :plane, landed!: self
       # plane = double(:plane, {:landed! => nil}) - same thing as above
       expect(airport).not_to be_full
       10.times {airport.gives_landing_permission_to(plane)}
@@ -68,7 +67,7 @@ describe Airport do
     end
 
     it 'a plane cannot land if the airport is full' do
-      plane = double :plane, landed!: nil
+      plane = double :plane, landed!: self
       10.times {airport.gives_landing_permission_to(plane)} # fill up the airport to capacity
       expect{airport.gives_landing_permission_to(plane)}.to raise_error(FullAirportError)
     end
@@ -92,13 +91,13 @@ describe Airport do
     end
 
     it 'a plane cannot take off when there is a storm brewing' do
-      plane = double :plane, take_off!: nil
+      plane = double :plane, take_off!: self
       # alternative: airport.stub!(:stormy?).and_return true
       expect{airport.gives_take_off_permission_to(plane)}.to raise_error(StormyWeatherError)
     end
     
     it 'a plane cannot land in the middle of a storm' do
-      plane = double :plane, take_off!: nil
+      plane = double :plane, take_off!: self
       expect{airport.gives_landing_permission_to(plane)}.to raise_error(StormyWeatherError)
     end
 
