@@ -7,6 +7,8 @@ class Airport
 
 	include Weather
 
+	attr_accessor(:capacity)
+
 	def initialize(options = {})
 		self.capacity = options.fetch(:capacity, capacity)
 		# same as self.capacity=(options.fetch(:capacity, capacity))
@@ -16,9 +18,10 @@ class Airport
 		@capacity ||= DEFAULT_CAPACITY
 	end
 
-	def capacity=(value)
-		@capacity = value
-	end
+	# replaced with attr_accessor(:capacity)
+	# def capacity=(value)
+	# 	@capacity = value
+	# end
 
 	def hangar
 		@hangar ||= []
