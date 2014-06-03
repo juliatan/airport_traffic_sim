@@ -9,9 +9,3 @@ class FullAirportError < RuntimeError
 		super
 	end
 end
-
-class AlreadyLandedError < RuntimeError
-  def initialize(message = "Plane already has that status.")
-    super
-  end
-end
