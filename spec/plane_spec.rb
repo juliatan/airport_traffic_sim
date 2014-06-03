@@ -1,4 +1,5 @@
 require 'plane'
+require './lib/errors'
 
 # When we create a new plane, it should have a "flying" status, thus planes can not be created in the airport.
 # When we land a plane at the airport, the plane in question should have its status changed to "landed"

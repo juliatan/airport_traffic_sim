@@ -25,19 +25,19 @@ describe Airport do
     end
 
     it 'a plane that is given landing permission actually lands' do
-      plane = double :plane, landed!: self
+      plane = double :plane, landed!: self, flying?: true
       airport.gives_landing_permission_to(plane)
       expect(airport.hangar).to include plane
     end
 
     it 'a plane receives landing status when it lands in the airport' do
-      plane = double :plane
+      plane = double :plane, flying?: true
       expect(plane).to receive(:landed!)
       airport.gives_landing_permission_to(plane)
     end
 
     it 'a plane that is given take off permission actually takes off' do
-      plane = double :plane, landed!: self, take_off!: self
+      plane = double :plane, landed!: self, flying?: true, take_off!: self
       airport.gives_landing_permission_to(plane)
       airport.gives_take_off_permission_to(plane)
       expect(airport.hangar).not_to include plane
@@ -50,6 +50,12 @@ describe Airport do
       airport.gives_take_off_permission_to(plane)
     end
 
+    it 'landed plane cannot be given a landed status' do
+      plane = double :plane, flying?: false
+      airport.gives_landing_permission_to(plane)
+      expect(airport.planes_count).to eq 0
+    end
+
   end
   
   context '- traffic control -' do
@@ -59,7 +65,7 @@ describe Airport do
     end
 
     it 'airport knows when it is full' do
-      plane = double :plane, landed!: self
+      plane = double :plane, landed!: self, flying?: true
       # plane = double(:plane, {:landed! => nil}) - same thing as above
       expect(airport).not_to be_full
       10.times {airport.gives_landing_permission_to(plane)}
@@ -67,7 +73,7 @@ describe Airport do
     end
 
     it 'a plane cannot land if the airport is full' do
-      plane = double :plane, landed!: self
+      plane = double :plane, landed!: self, flying?: true
       10.times {airport.gives_landing_permission_to(plane)} # fill up the airport to capacity
       expect{airport.gives_landing_permission_to(plane)}.to raise_error(FullAirportError)
     end
@@ -97,7 +103,7 @@ describe Airport do
     end
     
     it 'a plane cannot land in the middle of a storm' do
-      plane = double :plane, take_off!: self
+      plane = double :plane, take_off!: self, flying?: true
       expect{airport.gives_landing_permission_to(plane)}.to raise_error(StormyWeatherError)
     end
 
@@ -129,6 +135,7 @@ describe "The grand finale" do
         "Weather is too stormy; plane tries again later"
         redo
       end
+
       expect(plane.flying?).not_to be_true
 
       begin

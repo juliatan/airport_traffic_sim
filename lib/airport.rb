@@ -1,4 +1,5 @@
 require_relative 'weather'
+require_relative 'errors'
 
 class Airport
 
@@ -34,8 +35,12 @@ class Airport
 	def gives_landing_permission_to(plane)
 		raise StormyWeatherError.new if stormy?
 		raise FullAirportError.new if full?
-		hangar << plane
-		plane.landed!
+		if plane.flying? == false
+			return nil
+		else
+			hangar << plane
+			plane.landed!
+		end
 	end
 
 	def gives_take_off_permission_to(plane)
