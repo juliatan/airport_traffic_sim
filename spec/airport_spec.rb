@@ -68,13 +68,13 @@ describe Airport do
       plane = double :plane, landed!: self, flying?: true
       # plane = double(:plane, {:landed! => nil}) - same thing as above
       expect(airport).not_to be_full
-      10.times {airport.gives_landing_permission_to(plane)}
+      airport.capacity.times {airport.gives_landing_permission_to(plane)}
       expect(airport).to be_full
     end
 
     it 'a plane cannot land if the airport is full' do
       plane = double :plane, landed!: self, flying?: true
-      10.times {airport.gives_landing_permission_to(plane)} # fill up the airport to capacity
+      airport.capacity.times {airport.gives_landing_permission_to(plane)} # fill up the airport to capacity
       expect{airport.gives_landing_permission_to(plane)}.to raise_error(FullAirportError)
     end
 
