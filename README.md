@@ -17,10 +17,24 @@ Technologies used
 
 * Ruby
 * RSpec
+* Git
 
 How to use
 ----------
 
 ```shell
+git clone git@github.com:juliatan/airport_traffic_sim.git
+cd airport_traffic_sim
+irb
 require './lib/airport_sim'
+```
+
+Create new instances of planes and airports and make the planes fly and land through IRB.
+
+How to run tests
+----------------
+
+```shell
+cd airport_traffic_sim
+rspec
 ```
