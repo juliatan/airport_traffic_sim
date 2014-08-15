@@ -93,7 +93,7 @@ describe Airport do
     end
 
     it 'airport knows when the weather is stormy' do
-      expect(airport.stormy?).to be_true
+      expect(airport.stormy?).to be true
     end
 
     it 'a plane cannot take off when there is a storm brewing' do
@@ -136,7 +136,7 @@ describe "The grand finale" do
         redo
       end
 
-      expect(plane.flying?).not_to be_true
+      expect(plane.flying?).not_to be true
 
       begin
         airport.gives_take_off_permission_to(plane)
@@ -144,7 +144,7 @@ describe "The grand finale" do
         "Weather is too stormy; plane tries again later"
         redo
       end
-      expect(plane.flying?).to be_true
+      expect(plane.flying?).to be true
     end
     expect(airport.hangar).to be_empty
   end
